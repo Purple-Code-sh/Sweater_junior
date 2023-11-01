@@ -5,11 +5,11 @@
 
 int startPin = 2;
 
-int motorR_1 = 6;
-int motorR_2 = 3;
+int motorR_1 = 3;
+int motorR_2 = 6;
 
-int motorL_1 = 9;
-int motorL_2 = 5;
+int motorL_1 = 5;
+int motorL_2 = 9;
 
 int v_Front;
 
@@ -83,7 +83,7 @@ start:
     {
       Serial.println("Ninguno");
       goForward_proportional(30);
-      delay(300);
+      delay(400);
       proportionalUsed = 0;
       goto start;
     }
