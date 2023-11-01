@@ -1,12 +1,12 @@
 #define piso A3;
 
-#define front_R A7;
-#define front_L A0;
+#define front_R A7
+#define front_L A0
 
 int startPin = 2;
 
-int motorR_1 = 3;
-int motorR_2 = 6;
+int motorR_1 = 6;
+int motorR_2 = 3;
 
 int motorL_1 = 9;
 int motorL_2 = 5;
@@ -39,6 +39,17 @@ start:
   if (digitalRead(startPin) == HIGH) {
     Serial.println("Encendido");
 
+    // ---------- Line ----------
+//    if (analogRead(line_R) < 600)
+//    {
+//      Serial.println("Linea - derecha");
+//      goBack(100, 255, 100);
+//      goFull_left();
+//      delay(50);
+//      stopi(false);
+//      goto start;
+//    }
+    
     // ---------- Front ----------
 
     v_Front = frontSensors();
@@ -71,8 +82,8 @@ start:
     else
     {
       Serial.println("Ninguno");
-      goForward_proportional(20);
-      delay(150);
+      goForward_proportional(30);
+      delay(300);
       proportionalUsed = 0;
       goto start;
     }
