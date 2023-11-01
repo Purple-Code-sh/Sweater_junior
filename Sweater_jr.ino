@@ -1,14 +1,15 @@
-#define piso A2;
-int startPin = 2;
+#define piso A3;
 
-int front_L = 8;
-int front_R = 4;
+#define front_R A7;
+#define front_L A0;
+
+int startPin = 2;
 
 int motorR_1 = 3;
 int motorR_2 = 6;
 
-int motorL_1 = 5;
-int motorL_2 = 9;
+int motorL_1 = 9;
+int motorL_2 = 5;
 
 int v_Front;
 
@@ -56,14 +57,14 @@ start:
     else if (v_Front == 1)
     {
       Serial.println("Enfrente - izquierda");
-      goLeft(false, 90, 30, 1);
+      goFull_left();
       proportionalUsed = 0;
       goto start;
     }
     else if (v_Front == 2)
     {
       Serial.println("Enfrente - derecha");
-      goRight(false, 90, 30, 1);
+      goFull_right();
       proportionalUsed = 0;
       goto start;
     }
@@ -79,7 +80,6 @@ start:
     Serial.println("Apagado");
     stopi(false);
     proportionalUsed = 0;
-    //FLAG.write(90);
   }
 
 } // <<<---loop end
@@ -89,10 +89,23 @@ start:
 
 int frontSensors()
 {
-  int frontL = digitalRead(front_L);
-  int frontR = digitalRead(front_R) * 2;
+  int valFrontL = analogRead(front_L);
+  int front_L;
+  if (valFrontL >= 25) {
+    front_L = 1;
+  } else {
+    front_L = 0;
+  }
 
-  int addition_Front = frontL + frontR;
+  int valFrontR = analogRead(front_R);
+  int front_R;
+  if (valFrontR >= 25) {
+    front_R = 1;
+  } else {
+    front_R = 0;
+  }
+
+  int addition_Front = front_L + front_R;
 
   return addition_Front;
 }
@@ -132,70 +145,6 @@ void goForward(int powerL_f, int powerR_f, int workTime_f)
   stopi(false);
 }
 
-void goBack(int powerL_b, int powerR_b, int workTime_b)
-{
-  digitalWrite(motorL_1, LOW);
-  analogWrite(motorL_2, powerL_b);
-
-  digitalWrite(motorR_1, LOW);
-  analogWrite(motorR_2, powerR_b);
-
-  delay(workTime_b);
-  stopi(true);
-}
-
-void goRight(bool curve_r, int power_r, int workTime_r, int relation_r)
-{
-  if (curve_r == true)
-  {
-    analogWrite(motorL_1, power_r);
-    digitalWrite(motorL_2, LOW);
-
-    analogWrite(motorR_1, round(power_r / relation_r));
-    digitalWrite(motorR_2, LOW);
-
-    delay(workTime_r);
-    stopi(false);
-  }
-  else if (curve_r == false)
-  {
-    analogWrite(motorL_1, power_r);
-    digitalWrite(motorL_2, LOW);
-
-    digitalWrite(motorR_1, LOW);
-    analogWrite(motorR_2, power_r);
-
-    delay(workTime_r);
-    stopi(false);
-  }
-}
-
-void goLeft(bool curve_l, int power_l, int workTime_l, int relation_l)
-{
-  if (curve_l == true)
-  {
-    analogWrite(motorL_1, round(power_l / relation_l));
-    digitalWrite(motorL_2, LOW);
-
-    analogWrite(motorR_1, power_l);
-    digitalWrite(motorR_2, LOW);
-
-    delay(workTime_l);
-    stopi(false);
-  }
-  else if (curve_l == false)
-  {
-    digitalWrite(motorL_1, LOW);
-    analogWrite(motorL_2, power_l);
-
-    analogWrite(motorR_1, power_l);
-    digitalWrite(motorR_2, LOW);
-
-    delay(workTime_l);
-    stopi(false);
-  }
-}
-
 void goFull_left() {
   digitalWrite(motorL_1, LOW);
   digitalWrite(motorL_2, HIGH);
@@ -210,6 +159,18 @@ void goFull_right() {
 
   digitalWrite(motorR_1, LOW);
   digitalWrite(motorR_2, HIGH);
+}
+
+void goBack(int powerL_b, int powerR_b, int workTime_b)
+{
+  digitalWrite(motorL_1, LOW);
+  analogWrite(motorL_2, powerL_b);
+
+  digitalWrite(motorR_1, LOW);
+  analogWrite(motorR_2, powerR_b);
+
+  delay(workTime_b);
+  stopi(true);
 }
 
 // ------------------------- Proportional Functions ------------------------- .
